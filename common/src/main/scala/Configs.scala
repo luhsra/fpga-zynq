@@ -64,3 +64,5 @@ class ZynqSmallConfig extends Config(new WithZynqAdapter ++ new DefaultSmallConf
 class ZynqFPGAConfig extends Config(new WithoutTLMonitors ++ new ZynqConfig)
 class ZynqMediumFPGAConfig extends Config(new WithoutTLMonitors ++ new ZynqMediumConfig)
 class ZynqSmallFPGAConfig extends Config(new WithoutTLMonitors ++ new ZynqSmallConfig)
+
+class InterSlothFPGAConfig extends Config(new WithoutTLMonitors ++ new WithZynqAdapter ++ new WithBootROM ++ new freechips.rocketchip.system.InterSlothConfig)
