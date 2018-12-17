@@ -49,7 +49,7 @@ class WithNMediumCores(n: Int) extends Config((site, here, up) => {
 //class DefaultConfig extends Config(
   //new WithBootROM ++ new freechips.rocketchip.system.DefaultConfig)
 class DefaultConfig extends Config(
-  new WithBootROM ++ new WithNMediumCores(2) ++
+  new WithBootROM ++ new WithNMediumCores(4) ++
   new freechips.rocketchip.system.BaseConfig)
 class DefaultMediumConfig extends Config(
   new WithBootROM ++ new WithNMediumCores(1) ++
