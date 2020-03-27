@@ -3,6 +3,7 @@ package zynq
 import chisel3._
 import freechips.rocketchip.config.{Parameters, Config}
 import freechips.rocketchip.subsystem._
+import freechips.rocketchip.system.WithJtagDTMSystem
 import freechips.rocketchip.devices.tilelink.BootROMParams
 import freechips.rocketchip.rocket.{RocketCoreParams, MulDivParams, DCacheParams, ICacheParams}
 import freechips.rocketchip.tile.{RocketTileParams, XLen}
@@ -46,21 +47,41 @@ class WithNMediumCores(n: Int) extends Config((site, here, up) => {
   }
 })
 
-//class DefaultConfig extends Config(
-  //new WithBootROM ++ new freechips.rocketchip.system.DefaultConfig)
-class DefaultConfig extends Config(
-  new WithBootROM ++ new WithNMediumCores(2) ++
-  new freechips.rocketchip.system.BaseConfig)
+class DefaultConfig extends Config(new WithJtagDTMSystem ++ new WithBootROM ++ new freechips.rocketchip.system.BaseConfig)
 class DefaultMediumConfig extends Config(
-  new WithBootROM ++ new WithNMediumCores(1) ++
+  new WithBootROM ++
   new freechips.rocketchip.system.BaseConfig)
 class DefaultSmallConfig extends Config(
   new WithBootROM ++ new freechips.rocketchip.system.DefaultSmallConfig)
 
-class ZynqConfig extends Config(new WithZynqAdapter ++ new DefaultConfig)
-class ZynqMediumConfig extends Config(new WithZynqAdapter ++ new DefaultMediumConfig)
-class ZynqSmallConfig extends Config(new WithZynqAdapter ++ new DefaultSmallConfig)
+class ZynqConfig extends Config(new WithNMonotonicInterruptorSources(1) ++ new WithoutTLMonitors ++ new WithZynqAdapter ++ new DefaultConfig)
+class ZynqMediumConfig extends Config(new WithoutTLMonitors ++ new WithZynqAdapter ++ new DefaultMediumConfig)
+class ZynqSmallConfig extends Config(new WithoutTLMonitors ++ new WithZynqAdapter ++ new DefaultSmallConfig)
 
-class ZynqFPGAConfig extends Config(new WithoutTLMonitors ++ new ZynqConfig)
-class ZynqMediumFPGAConfig extends Config(new WithoutTLMonitors ++ new ZynqMediumConfig)
-class ZynqSmallFPGAConfig extends Config(new WithoutTLMonitors ++ new ZynqSmallConfig)
+class ZynqFPGAConfig extends Config(new WithoutVM ++ new WithNMediumCores(4) ++ new WithNExtTopInterrupts(5) ++ new ZynqConfig)
+class ZynqMediumFPGAConfig extends Config(new WithoutVM ++ new WithNMediumCores(2) ++ new WithNExtTopInterrupts(5) ++ new ZynqMediumConfig)
+class ZynqSmallFPGAConfig extends Config(new WithoutVM ++ new WithNMediumCores(1) ++ new WithNExtTopInterrupts(5) ++ new WithoutTLMonitors ++ new ZynqSmallConfig)
+
+class EvalConfigH2I8 extends Config(new WithoutVM ++ new WithNMediumCores(2) ++ new WithNExtTopInterrupts(5) ++ new ZynqConfig)
+class EvalConfigH2I16 extends Config(new WithoutVM ++ new WithNMediumCores(2) ++ new WithNExtTopInterrupts(13) ++ new ZynqConfig)
+class EvalConfigH2I32 extends Config(new WithoutVM ++ new WithNMediumCores(2) ++ new WithNExtTopInterrupts(29) ++ new ZynqConfig)
+class EvalConfigH2I64 extends Config(new WithoutVM ++ new WithNMediumCores(2) ++ new WithNExtTopInterrupts(61) ++ new ZynqConfig)
+class EvalConfigH2I128 extends Config(new WithoutVM ++ new WithNMediumCores(2) ++ new WithNExtTopInterrupts(125) ++ new ZynqConfig)
+
+class EvalConfigH4I8 extends Config(new WithoutVM ++ new WithNMediumCores(4) ++ new WithNExtTopInterrupts(5) ++ new ZynqConfig)
+class EvalConfigH4I16 extends Config(new WithoutVM ++ new WithNMediumCores(4) ++ new WithNExtTopInterrupts(13) ++ new ZynqConfig)
+class EvalConfigH4I32 extends Config(new WithoutVM ++ new WithNMediumCores(4) ++ new WithNExtTopInterrupts(29) ++ new ZynqConfig)
+class EvalConfigH4I64 extends Config(new WithoutVM ++ new WithNMediumCores(4) ++ new WithNExtTopInterrupts(61) ++ new ZynqConfig)
+class EvalConfigH4I128 extends Config(new WithoutVM ++ new WithNMediumCores(4) ++ new WithNExtTopInterrupts(125) ++ new ZynqConfig)
+
+class EvalConfigH8I8 extends Config(new WithoutVM ++ new WithNMediumCores(8) ++ new WithNExtTopInterrupts(5) ++ new ZynqConfig)
+class EvalConfigH8I16 extends Config(new WithoutVM ++ new WithNMediumCores(8) ++ new WithNExtTopInterrupts(13) ++ new ZynqConfig)
+class EvalConfigH8I32 extends Config(new WithoutVM ++ new WithNMediumCores(8) ++ new WithNExtTopInterrupts(29) ++ new ZynqConfig)
+class EvalConfigH8I64 extends Config(new WithoutVM ++ new WithNMediumCores(8) ++ new WithNExtTopInterrupts(61) ++ new ZynqConfig)
+class EvalConfigH8I128 extends Config(new WithoutVM ++ new WithNMediumCores(8) ++ new WithNExtTopInterrupts(125) ++ new ZynqConfig)
+
+class EvalConfigH16I8 extends Config(new WithoutVM ++ new WithNMediumCores(16) ++ new WithNExtTopInterrupts(5) ++ new ZynqConfig)
+class EvalConfigH16I16 extends Config(new WithoutVM ++ new WithNMediumCores(16) ++ new WithNExtTopInterrupts(13) ++ new ZynqConfig)
+class EvalConfigH16I32 extends Config(new WithoutVM ++ new WithNMediumCores(16) ++ new WithNExtTopInterrupts(29) ++ new ZynqConfig)
+class EvalConfigH16I64 extends Config(new WithoutVM ++ new WithNMediumCores(16) ++ new WithNExtTopInterrupts(61) ++ new ZynqConfig)
+class EvalConfigH16I128 extends Config(new WithoutVM ++ new WithNMediumCores(16) ++ new WithNExtTopInterrupts(125) ++ new ZynqConfig)

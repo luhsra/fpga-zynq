@@ -69,6 +69,12 @@ src/tcl/make_bitstream_$(CONFIG).tcl: $(common)/make_bitstream.tcl
 	sed 's/BOARD_NAME_HERE/$(BOARD)/g;s/CHISEL_CONFIG_HERE/$(CONFIG)/g' \
 		$(common)/make_bitstream.tcl > src/tcl/make_bitstream_$(CONFIG).tcl
 
+src/tcl/make_utilization_synth_$(CONFIG).tcl: $(common)/make_utilization_synth.tcl
+	sed 's/BOARD_NAME_HERE/$(BOARD)/g;s/CHISEL_CONFIG_HERE/$(CONFIG)/g' $< > $@
+
+src/tcl/make_utilization_impl_$(CONFIG).tcl: $(common)/make_utilization_impl.tcl
+	sed 's/BOARD_NAME_HERE/$(BOARD)/g;s/CHISEL_CONFIG_HERE/$(CONFIG)/g' $< > $@
+
 src/verilog/%.v: $(ROCKET_DIR)/src/main/resources/vsrc/%.v
 	cp $< $@
 
@@ -117,6 +123,15 @@ $(bitstream): src/tcl/make_bitstream_$(CONFIG).tcl $(verilog_srcs) src/constrs/b
 	vivado -mode tcl -source src/tcl/make_bitstream_$(CONFIG).tcl
 bitstream: $(bitstream)
 
+synth_utilization = $(CONFIG)_util_synth.txt
+$(synth_utilization): src/tcl/make_utilization_synth_$(CONFIG).tcl $(verilog_srcs) src/constrs/base.xdc | $(project)
+	vivado -mode tcl -source src/tcl/make_utilization_synth_$(CONFIG).tcl
+synth_utilization: $(synth_utilization)
+
+impl_utilization = $(CONFIG)_util_impl.txt
+$(impl_utilization): src/tcl/make_utilization_impl_$(CONFIG).tcl $(verilog_srcs) src/constrs/base.xdc | $(project)
+impl_utilization: $(impl_utilization)
+	vivado -mode tcl -source src/tcl/make_utilization_impl_$(CONFIG).tcl
 
 
 # Platform software generation
@@ -237,6 +252,12 @@ fesvr-zynq: $(common_build)/$(fesvr-main)
 
 clean:
 	rm -f *.log *.jou *.str
+	rm -rf $(common_build)/*
+	rm -rf $(BOARD)_rocketchip_*
+	rm -rf src/tcl/make_bitstream_*.tcl
+	rm -rf src/tcl/make_utilization_*.tcl
+	rm -rf src/tcl/$(BOARD)_rocketchip_*.tcl
+	rm -rf src/verilog/*.v
 	rm -rf csrc simv-* output ucli.key vc_hdrs.h DVEfiles
 
 .PHONY: vivado project init-submodules rocket fesvr-zynq fetch-images load-sd ramdisk-open ramdisk-close clean

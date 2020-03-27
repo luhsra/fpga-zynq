@@ -6,6 +6,6 @@ wait_on_run synth_1
 launch_runs impl_1 -to_step write_bitstream
 wait_on_run impl_1
 open_run impl_1
-report_utilization -cells top/target -file util_rocket_CHISEL_CONFIG_HERE.txt
-report_utilization -cells top/target/plic - file util_plic_CHISEL_CONFIG_HERE.txt
+report_utilization -cells top/target/plic -file CHISEL_CONFIG_HERE_util_impl_plic.txt
+report_utilization -cells top/target -file CHISEL_CONFIG_HERE_util_impl_rocket.txt
 exit

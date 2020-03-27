@@ -1,0 +1,5 @@
+evals/
+evals_finished/
+src/tcl/make_bitstream_*.tcl
+src/verilog/Top.*.v
+src/tcl/make_utilization_*.tcl
